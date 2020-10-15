@@ -1,0 +1,46 @@
+## basic information
+- name: [Junyu Wang]
+- netid: [jwang2289]
+
+
+## query 2 
+- 1. INDEX:
+	There are three indexes created on P_PARTKEY, P_TYPE, P_SIZE on table PART
+	There is one index created on PS_SUPPKEY on table PARTSUPP
+	There two indexes created on S_SUPPKEY, S_NATIONKEY on table SUPPLIER
+	There is one index create on N_NATIONKEY on table NATION
+	There are two indexes created on R_RIGIONKEY, R_NAME on table REGION
+  2. Left join to replace the nested loop join to reduce number of rows and columns
+	I use the "exist" to replace the join to avoid the full scan in the nested loop when there are duplicate values 
+  3. Change the combination of join
+	I first combine the Nation and region together in a subquery and join it with other table to recuse the number of operation the nested loop greatly
+  4. Change the sequence of prediction in where clause
+	Put the prediction, which will filter most rows, in the front position.
+
+  
+- The optimized query shows [98.36%] % improvement over baseline. 
+
+
+## query 3
+- 1. Index:
+	There are two indexes created on C_MKTSEGMENT， C_CUSKEY on table CUSTOMER 
+	There are three indexes created on O_ORDERKEY, O_CUSKEY, O_ORDERDATE on table ORDER
+	There are two indexes created on L_ORDERKEY, L_SHIPDATE on table LINEITEM
+  2. Selection and projection before the join
+	Push down the where condition in the subquery to reduce the row number and join them together
+  
+  3. Push down the group by in the LINEITEM
+	Use the "group by" based on index before join two huge table together. This can recuse the calculation greatly
+
+
+- The optimized query shows [48.12%] % improvement over baseline. 
+
+
+## query 4 
+- 1. Index:
+	There are two indexes created on C_MKTSEGMENT， C_CUSKEY on table CUSTOMER 
+	There are three indexes created on O_ORDERKEY, O_CUSKEY, O_ORDERDATE on table ORDER
+	There are two indexes created on L_ORDERKEY, L_SHIPDATE on table LINEITEM
+
+
+- The optimized query shows [42.79%] % improvement over baseline. 

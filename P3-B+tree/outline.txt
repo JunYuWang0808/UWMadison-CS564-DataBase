@@ -1,0 +1,32 @@
+The test cases are in the main function
+
+
+test4: line 206
+	Goal: Test for the large number
+	Implement: Set the size of the relationship to be 50000
+	This is to test whether the database can handle a large amount of data and find the data correctly.
+
+test5: line 218
+	Goal: Test for the small number
+	Implement: Set the size of the relationship to be 10, and the search 	
+	This is to test whether the database can handle a small amount of data and find the data correctly. In this situation, the level should only be one, and the root node is also the leaf node.
+
+test6: line 227
+	Goal: Test reuse of the index file
+	Implement: First you generate a relation file, and you don't delete it after finishing the operation. Then you can reuse it.
+	This is to handle the situation that there is already a index file, and you should read it correctly.
+
+test7: line 237
+	Goal: Test the search edge, where the outcome is 0
+	checkPassFail(intScan(&index,5,GT,6,LT), 0)
+	Implement: set checkPassFail(intScan(&index,5,GT,6,LT), 0), which is a valid scale but nor return the outcome
+	This is designed to handle the edge condition
+
+test8: line 248
+	Goal: Search the whole scale to determine whether leafnode of b+tree can be 		visited one by one correctly(Read the data across the pages)
+	Implement  	checkPassFail(intScan(&index,0,GTE,4999,LTE), 5000)
+	This is designed to handle the last element
+
+Test9: line 286
+	Goal: Use small size of buffer pool to detect "unpin"
+	Implement: Set the buffer to be small, and read two level index tree. 

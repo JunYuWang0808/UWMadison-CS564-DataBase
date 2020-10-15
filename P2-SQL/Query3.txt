@@ -1,0 +1,56 @@
+SELECT same.N_NAME, same_t, diff_t
+FROM (SELECT N_NAME, sum(t) as diff_t
+      FROM (SELECT R_REGIONKEY, N_NAME, C_NATIONKEY, sum(L_QUANTITY * (L_EXTENDEDPRICE - L_DISCOUNT)) as t
+            FROM REGION,
+                 NATION,
+                 SUPPLIER,
+                 LINEITEM,
+                 ORDERS,
+                 CUSTOMER
+            WHERE R_REGIONKEY = N_REGIONKEY
+              AND N_NATIONKEY = S_NATIONKEY
+              AND S_SUPPKEY = L_SUPPKEY
+              AND O_ORDERKEY = L_ORDERKEY
+              AND O_CUSTKEY = C_CUSTKEY
+            GROUP BY R_REGIONKEY, N_NAME, C_NATIONKEY) as x,
+           (
+               SELECT DISTINCT C_NATIONKEY, R_REGIONKEY
+               FROM REGION,
+                    NATION,
+                    CUSTOMER
+               WHERE R_REGIONKEY = N_REGIONKEY
+                 AND N_NATIONKEY = C_NATIONKEY
+           ) as y
+      WHERE y.C_NATIONKEY = x.C_NATIONKEY
+        AND y.R_REGIONKEY != x.R_REGIONKEY
+      GROUP BY x.N_NAME) as diff,
+     (SELECT N_NAME, sum(t) as same_t
+      FROM (SELECT R_REGIONKEY, N_NAME, C_NATIONKEY, sum(L_QUANTITY * (L_EXTENDEDPRICE - L_DISCOUNT)) as t
+            FROM REGION,
+                 NATION,
+                 SUPPLIER,
+                 LINEITEM,
+                 ORDERS,
+                 CUSTOMER
+            WHERE R_REGIONKEY = N_REGIONKEY
+              AND N_NATIONKEY = S_NATIONKEY
+              AND S_SUPPKEY = L_SUPPKEY
+              AND O_ORDERKEY = L_ORDERKEY
+              AND O_CUSTKEY = C_CUSTKEY
+            GROUP BY R_REGIONKEY, N_NAME, C_NATIONKEY) as x,
+           (
+               SELECT DISTINCT C_NATIONKEY, R_REGIONKEY
+               FROM REGION,
+                    NATION,
+                    CUSTOMER
+               WHERE R_REGIONKEY = N_REGIONKEY
+                 AND N_NATIONKEY = C_NATIONKEY
+           ) as y
+      WHERE y.C_NATIONKEY = x.C_NATIONKEY
+        AND y.R_REGIONKEY = x.R_REGIONKEY
+      GROUP BY x.N_NAME
+     ) as same
+WHERE same.N_NAME = diff.N_NAME
+ORDER BY same.same_t DESC
+
+
